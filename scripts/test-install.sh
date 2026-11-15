@@ -74,9 +74,6 @@ expect "version with v" 0 "$TOOL_NAME $version " VERSION="v$version" VERIFY=chec
 expect "unknown verify" 2 "verify must be" VERIFY=none
 expect "bad version" 2 "version must be" VERSION=1.2
 expect "path in version" 2 "version must be" VERSION=../../1.0.0
-mode_code=0
-MODE=report bash "$here/run.sh" 2>/dev/null || mode_code=$?
-if [[ "$mode_code" -eq 2 ]]; then pass "unknown mode exits 2"; else fail "unknown mode: exit $mode_code, want 2"; fi
 
 real=$work/real
 mkdir "$real"

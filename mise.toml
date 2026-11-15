@@ -8,7 +8,7 @@ jactionlint = "2.5.0"
 shellcheck = "0.11.0"
 
 [tasks.check]
-description = "Lint and the install tests: the single verification command"
+description = "Lint and the tests: the single verification command"
 depends = ["lint", "test"]
 
 [tasks.lint]
@@ -28,8 +28,16 @@ description = "Writing rules from .claude/rules/writing.md, with tfcensus's chec
 run = "proselint"
 
 [tasks.test]
+description = "The install and run tests"
+depends = ["test:install", "test:run"]
+
+[tasks."test:install"]
 description = "Install the pinned release with each verify mode and check that tampered downloads fail (needs network and gh)"
 run = "bash scripts/test-install.sh"
+
+[tasks."test:run"]
+description = "run.sh with a stub binary: inputs, arguments, outputs, exit codes and the comment rules (offline)"
+run = "bash scripts/test-run.sh"
 
 [tasks."sibling:diff"]
 description = "Compare the files shared with tfcensus-action and tfcensus (.claude/rules/siblings.md)"

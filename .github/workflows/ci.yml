@@ -28,6 +28,7 @@ jobs:
 
   # scripts/test-install.sh: every verify mode installs the pinned release, and a tampered archive
   # fails, with and without a rewritten checksums.txt. cosign comes from mise.lock.
+  # scripts/test-run.sh: report and comment mode with a stub binary, fork pull requests included.
   test:
     name: test (${{ matrix.os }})
     strategy:
