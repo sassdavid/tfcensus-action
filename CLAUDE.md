@@ -25,6 +25,9 @@ keeps one pull request comment. The milestone is M14 in tfcensus's
 - Every `uses:` is pinned by SHA, inside `action.yml` too. `permissions: {}` at the top of each
   workflow, and each job asks for what it needs.
 - Exit 2 for a bad input, 1 for a failed download or check.
+- Workflows install tools with mise (`jdx/mise-action` and `mise.lock`), as tfcensus does
+  (`docs/engineering/ci-and-release.md` there). `action.yml` is the exception: it runs on users'
+  runners, which may not have mise, so `scripts/install.sh` downloads and checks the release.
 - Releases: release-please creates a draft `vX.Y.Z`. The owner publishes it in the web UI (the
   Marketplace box), release immutability locks it, and `major-tag.yml` moves `v1`. `v1` never
   gets a release.
