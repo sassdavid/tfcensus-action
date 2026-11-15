@@ -29,6 +29,12 @@ keeps one pull request comment. The milestone is M14 in tfcensus's
   Marketplace box), release immutability locks it, and `major-tag.yml` moves `v1`. `v1` never
   gets a release.
 - Conventional Commits. release-please owns versions and tags.
+- Renovate: the setup and the shared rules are in tfcensus's engineering ADR-0015 and
+  `docs/engineering/ci-and-release.md#renovate`. Rules only this repo has, in `renovate.json`: a
+  tfcensus release bumps `TOOL_VERSION` in `scripts/tool.env` as `feat` (major, minor) or `fix`
+  (patch), so release-please releases the action; the owner's releases skip the 3-day cooldown; a
+  regex manager updates the SHAs in the README examples, and the pin of this action gets a `docs`
+  commit, which releases nothing.
 
 ## Sibling repos
 - tfcensus-action (`~/src/github/tfcensus-action`) is built the same way, and tfcensus

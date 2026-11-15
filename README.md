@@ -163,11 +163,11 @@ mise run check          # jactionlint, shellcheck, prose lint, install tests (ne
 mise run sibling:diff   # compare the files shared with tfcensus-action and tfcensus
 ```
 
-CI runs the install and run tests and the action itself on ubuntu, macos and windows, and zizmor
-in `security.yml`. `renovate.yml` runs Renovate weekly as the `sassdavid-renovate` GitHub App,
-and `renovate-config.yml` validates `renovate.json` on pull requests. `scripts/test-run.sh` runs `scripts/run.sh` with a stub binary: the inputs,
-the arguments each mode builds, the outputs, the exit codes, and the comment rules for forks and
-Dependabot. Report and comment mode run for real on
+CI runs the install and run tests and the action itself on ubuntu, macos and windows, and zizmor in
+`security.yml`. `renovate.yml` runs Renovate weekly as the `sassdavid-renovate` GitHub App, and
+`renovate-config.yml` validates `renovate.json` on pull requests. `scripts/test-run.sh` runs
+`scripts/run.sh` with a stub binary: the inputs, the arguments each mode builds, the outputs, the
+exit codes, and the comment rules for forks and Dependabot. Report and comment mode run for real on
 [sassdavid/action-test](https://github.com/sassdavid/action-test).
 
 ## License
