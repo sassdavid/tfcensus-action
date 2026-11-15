@@ -5,7 +5,7 @@ release on Linux, macOS and Windows runners. In report mode it runs `tfcensus dr
 drifted units to code scanning. In comment mode it also keeps one comment with the drift report on
 the pull request.
 
-v1.0.0 is on the [GitHub Marketplace](https://github.com/marketplace/actions/tfcensus).
+The action is on the [GitHub Marketplace](https://github.com/marketplace/actions/tfcensus).
 
 The action never takes AWS credentials. Run `aws-actions/configure-aws-credentials` and set up
 terragrunt and terraform before it.
@@ -20,7 +20,7 @@ newest 1.x release and has no release of its own.
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: sassdavid/tfcensus-action@feb168b70125ff0c4c73954bd068aceb18e62109 # v1.0.0
+  - uses: sassdavid/tfcensus-action@f2cc1dccce5a5de868ff2f3f50dbec2603d197c7 # v1.0.1
   - run: tfcensus drift
 ```
 
@@ -63,7 +63,7 @@ jobs:
           terragrunt run --all --json-out-dir "$RUNNER_TEMP/plans" \
             --report-file "$RUNNER_TEMP/plans/report.json" --report-format json \
             -- plan -refresh-only -lock=false -detailed-exitcode || true
-      - uses: sassdavid/tfcensus-action@feb168b70125ff0c4c73954bd068aceb18e62109 # v1.0.0
+      - uses: sassdavid/tfcensus-action@f2cc1dccce5a5de868ff2f3f50dbec2603d197c7 # v1.0.1
         with:
           mode: report
           from: ${{ runner.temp }}/plans
@@ -102,7 +102,7 @@ jobs:
       pull-requests: write # the comment
     steps:
       # checkout, mise, AWS credentials and terragrunt as in the report example
-      - uses: sassdavid/tfcensus-action@feb168b70125ff0c4c73954bd068aceb18e62109 # v1.0.0
+      - uses: sassdavid/tfcensus-action@f2cc1dccce5a5de868ff2f3f50dbec2603d197c7 # v1.0.1
         with:
           mode: comment
           from: ${{ runner.temp }}/plans
