@@ -1,8 +1,33 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "helpers:pinGitHubActionDigests", ":semanticCommits"],
+  "extends": ["config:best-practices", ":semanticCommits"],
   "minimumReleaseAge": "3 days",
+  "osvVulnerabilityAlerts": true,
   "packageRules": [
+    {
+      "description": "One PR for all non-major GitHub Actions updates; majors get their own PR",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "The README examples move with the workflows, except the pin of this action",
+      "matchFileNames": ["README.md"],
+      "matchDepNames": ["!sassdavid/tfcensus-action"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "One PR for all non-major tool updates in mise.toml; majors get their own PR",
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "mise tools"
+    },
+    {
+      "description": "install.sh runs the cosign version that CI tests from mise.toml",
+      "groupName": "cosign",
+      "matchDepNames": ["cosign", "sigstore/cosign"]
+    },
     {
       "description": "A new tfcensus release changes what the action installs, so release-please releases the action",
       "matchDepNames": ["sassdavid/tfcensus"],
@@ -16,9 +41,30 @@
       "semanticCommitType": "fix"
     },
     {
-      "description": "install.sh runs the cosign version that CI tests from mise.toml",
-      "groupName": "cosign",
-      "matchDepNames": ["cosign", "sigstore/cosign"]
+      "description": "Own releases skip the cooldown, so the action follows a tfcensus release on the next run",
+      "matchPackageNames": ["sassdavid/tfcensus", "github.com/sassdavid/tfcensus/**"],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "README examples pin this action: a new release changes the docs, not the action",
+      "matchDepNames": ["sassdavid/tfcensus-action"],
+      "semanticCommitType": "docs",
+      "semanticCommitScope": null,
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "ghcr.io has no release timestamps, so age the renovate-version input by the npm release of the same version",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["uses-with"],
+      "matchPackageNames": ["ghcr.io/renovatebot/renovate"],
+      "overrideDatasource": "npm",
+      "overridePackageName": "renovate",
+      "pinDigests": false
+    },
+    {
+      "description": "shellcheck releases rarely, but its repository is active",
+      "matchDepNames": ["shellcheck"],
+      "abandonmentThreshold": null
     }
   ],
   "customManagers": [
@@ -30,13 +76,11 @@
       "extractVersionTemplate": "^v(?<version>.+)$"
     },
     {
-      "description": "mise version used by jdx/mise-action in workflows",
+      "description": "Actions pinned by SHA with a version comment in the README examples",
       "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["uses: jdx/mise-action@\\S+ # \\S+\\n\\s+with:\\n\\s+version: (?<currentValue>\\d+\\.\\d+\\.\\d+)"],
-      "depNameTemplate": "jdx/mise",
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^v(?<version>.+)$"
+      "managerFilePatterns": ["/^README\\.md$/"],
+      "matchStrings": ["uses: (?<depName>[\\w.-]+/[\\w.-]+)(?:/[\\w./-]+)?@(?<currentDigest>[0-9a-f]{40}) # (?<currentValue>v\\d+(?:\\.\\d+){0,2})"],
+      "datasourceTemplate": "github-tags"
     }
   ]
 }
