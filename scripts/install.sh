@@ -130,7 +130,9 @@ case "$verify" in
       die 1 "verify: cosign needs cosign or mise on PATH; add cosign to your mise.toml, or use verify: attestation"
     fi
     fetch checksums.txt.sigstore.json
-    identity="^https://github\\.com/${TOOL_SIGNER_WORKFLOW//./\\.}@refs/"
+    # [.] instead of \. because Git Bash on Windows turns backslashes in the arguments of a
+    # native program into slashes.
+    identity="^https://github[.]com/${TOOL_SIGNER_WORKFLOW//./[.]}@refs/"
     (cd "$work" && "${cosign[@]}" verify-blob --bundle "$dl/checksums.txt.sigstore.json" \
       --certificate-identity-regexp "$identity" --certificate-oidc-issuer "$OIDC_ISSUER" \
       "$dl/checksums.txt" >&2) || die 1 "cosign verify-blob failed for checksums.txt (identity $identity)"
