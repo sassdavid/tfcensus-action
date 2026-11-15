@@ -1,0 +1,47 @@
+name: tfcensus
+description: Install a verified tfcensus release from GitHub on Linux, macOS and Windows runners.
+author: sassdavid
+branding:
+  icon: package
+  color: blue
+
+inputs:
+  version:
+    description: tfcensus version to install (X.Y.Z, vX.Y.Z or latest). Empty installs the version this action release pins in scripts/tool.env.
+    required: false
+    default: ""
+  verify:
+    description: >-
+      The check after sha256 against checksums.txt. attestation runs gh attestation verify,
+      pinned to tfcensus's release workflow. cosign runs cosign verify-blob on checksums.txt and
+      needs cosign or mise on PATH. checksum adds nothing.
+    required: false
+    default: attestation
+  mode:
+    description: What the action does after installing. install only puts tfcensus on PATH.
+    required: false
+    default: install
+  github-token:
+    description: Token for gh attestation verify.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  version:
+    description: The installed tfcensus version, without a leading v.
+    value: ${{ steps.run.outputs.version }}
+  path:
+    description: Absolute path of the tfcensus binary.
+    value: ${{ steps.run.outputs.path }}
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        VERIFY: ${{ inputs.verify }}
+        MODE: ${{ inputs.mode }}
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: bash "$GITHUB_ACTION_PATH/scripts/run.sh"

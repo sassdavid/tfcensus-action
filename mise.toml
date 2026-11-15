@@ -1,0 +1,36 @@
+# Toolchain and tasks. Tool versions match tfcensus's mise.toml (Renovate keeps both current).
+
+[tools]
+go = "1.27.4"
+"go:github.com/sassdavid/tfcensus/scripts/proselint" = "0.2.0"
+cosign = "3.1.4"
+jactionlint = "2.5.0"
+shellcheck = "0.11.0"
+
+[tasks.check]
+description = "Lint and the install tests: the single verification command"
+depends = ["lint", "test"]
+
+[tasks.lint]
+description = "All linters: GitHub workflows and action.yml, shell scripts, prose"
+depends = ["lint:actions", "lint:shell", "lint:prose"]
+
+[tasks."lint:actions"]
+description = "jactionlint on the workflows (.github/jactionlint.yaml); annotations in GitHub Actions"
+run = "jactionlint ${GITHUB_ACTIONS:+--format github}"
+
+[tasks."lint:shell"]
+description = "shellcheck on the scripts, following tool.env"
+run = "shellcheck -x scripts/*.sh"
+
+[tasks."lint:prose"]
+description = "Writing rules from .claude/rules/writing.md, with tfcensus's checker"
+run = "proselint"
+
+[tasks.test]
+description = "Install the pinned release with each verify mode and check that tampered downloads fail (needs network and gh)"
+run = "bash scripts/test-install.sh"
+
+[tasks."sibling:diff"]
+description = "Compare the files shared with tfcensus-action and tfcensus (.claude/rules/siblings.md)"
+run = "bash scripts/sibling-diff.sh"

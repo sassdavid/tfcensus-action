@@ -1,0 +1,2 @@
+# Every OS checks out text files with LF, so bash on the Windows runner reads the scripts as written.
+* text=auto eol=lf

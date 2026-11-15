@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests", ":semanticCommits"],
+  "minimumReleaseAge": "3 days",
+  "packageRules": [
+    {
+      "description": "A new tfcensus release changes what the action installs, so release-please releases the action",
+      "matchDepNames": ["sassdavid/tfcensus"],
+      "matchUpdateTypes": ["major", "minor"],
+      "semanticCommitType": "feat"
+    },
+    {
+      "description": "A tfcensus patch release gives an action patch release",
+      "matchDepNames": ["sassdavid/tfcensus"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix"
+    },
+    {
+      "description": "install.sh runs the cosign version that CI tests from mise.toml",
+      "groupName": "cosign",
+      "matchDepNames": ["cosign", "sigstore/cosign"]
+    }
+  ],
+  "customManagers": [
+    {
+      "description": "Versions pinned in scripts with a # renovate: comment on the line before",
+      "customType": "regex",
+      "managerFilePatterns": ["/^scripts/.+\\.(env|sh)$/"],
+      "matchStrings": ["# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n[A-Z_]+=(?<currentValue>\\S+)"],
+      "extractVersionTemplate": "^v(?<version>.+)$"
+    },
+    {
+      "description": "mise version used by jdx/mise-action in workflows",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
+      "matchStrings": ["uses: jdx/mise-action@\\S+ # \\S+\\n\\s+with:\\n\\s+version: (?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "jdx/mise",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.+)$"
+    }
+  ]
+}

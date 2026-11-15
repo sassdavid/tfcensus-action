@@ -1,0 +1,36 @@
+name: major-tag
+
+# Moves v1 to a newly published vX.Y.Z (scripts/major-tag.sh). The owner publishes releases in
+# the web UI, so the release event comes from a person and starts this workflow. Run it by hand
+# with a tag to repair the major tag.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: A published vX.Y.Z release to point its major tag at
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: major-tag
+  cancel-in-progress: false
+
+jobs:
+  major-tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # move the major tag
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Move the major tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: bash scripts/major-tag.sh

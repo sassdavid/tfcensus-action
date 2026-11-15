@@ -1,0 +1,2 @@
+# shellcheck resolves "source=" directives next to the script that sources the file.
+source-path=SCRIPTDIR

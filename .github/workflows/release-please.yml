@@ -1,0 +1,27 @@
+name: release-please
+
+# release-please opens the release PR. Merging it creates the vX.Y.Z tag and a draft release.
+# The owner publishes the draft in the web UI (with the Marketplace box ticked), which makes it
+# immutable, and major-tag.yml then moves the major tag.
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # create the release PR branch, tag and draft release
+      pull-requests: write # open and update the release PR
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

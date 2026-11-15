@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jdx/jactionlint/v2.5.0/schema/jactionlint-config.json
+# mise run lint:actions. The default profile runs actionlint's checks plus the security and
+# policy rules worth failing a build on.
+profile: default

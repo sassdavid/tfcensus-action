@@ -1,0 +1,108 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        with:
+          version: 2026.11.5
+      - run: mise run lint
+
+  # scripts/test-install.sh: every verify mode installs the pinned release, and a tampered archive
+  # fails, with and without a rewritten checksums.txt. cosign comes from mise.lock.
+  test:
+    name: test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        with:
+          version: 2026.11.5
+          install_args: cosign
+      - run: mise run test
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  # The action as a user runs it: no mise, no cosign, only what the runner image has.
+  action:
+    name: action (${{ matrix.os }}, ${{ matrix.verify }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        verify: [attestation, checksum]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: action
+        uses: $/
+        with:
+          verify: ${{ matrix.verify }}
+      - name: check the outputs and PATH
+        shell: bash
+        env:
+          OUT_VERSION: ${{ steps.action.outputs.version }}
+          OUT_PATH: ${{ steps.action.outputs.path }}
+        run: bash scripts/test-outputs.sh
+
+  # verify: cosign with mise on PATH and no cosign: install.sh runs cosign through mise exec.
+  action-cosign:
+    name: action (${{ matrix.os }}, cosign through mise)
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        with:
+          version: 2026.11.5
+          install: false
+      - id: action
+        uses: $/
+        with:
+          verify: cosign
+      - name: check the outputs and PATH
+        shell: bash
+        env:
+          OUT_VERSION: ${{ steps.action.outputs.version }}
+          OUT_PATH: ${{ steps.action.outputs.path }}
+        run: bash scripts/test-outputs.sh
