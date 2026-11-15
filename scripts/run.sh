@@ -159,7 +159,13 @@ if [[ -n "$from" ]]; then
   for a in ${user[@]+"${user[@]}"}; do
     [[ "$a" == "$TOOL_FROM_FILE_FLAG" || "$a" == "$TOOL_FROM_FILE_FLAG="* ]] && named=true
   done
-  if [[ -n "$TOOL_FROM_FILE_FLAG" && "$named" == false && -f "$wd/$from/$TOOL_FROM_FILE" ]]; then
+  # An absolute from, such as ${{ runner.temp }}/plans or D:\a\_temp\plans, doesn't start at wd.
+  file=$from/$TOOL_FROM_FILE
+  if command -v cygpath >/dev/null 2>&1; then
+    file=$(cygpath -u "$file")
+  fi
+  [[ "$file" == /* ]] || file=$wd/$file
+  if [[ -n "$TOOL_FROM_FILE_FLAG" && "$named" == false && -f "$file" ]]; then
     args+=("$TOOL_FROM_FILE_FLAG" "$from/$TOOL_FROM_FILE")
   fi
 fi

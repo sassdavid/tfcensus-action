@@ -169,6 +169,14 @@ else
   check "from: file flag" logged "$report" "$TOOL_FROM_FILE_FLAG" "plans/$TOOL_FROM_FILE"
   run "from with the file flag in args" 0 MODE=report FROM=plans ARGS="$TOOL_FROM_FILE_FLAG=other.json"
   check "from: args win" test "$(grep -Fc -- "$TOOL_FROM_FILE_FLAG" "$case/log.$report")" = 1
+  plans=$work/case$((n + 1))/repo/plans
+  run "absolute from with its file" 0 MODE=report FROM="$plans"
+  check "absolute from: file flag" logged "$report" "$TOOL_FROM_FILE_FLAG" "$plans/$TOOL_FROM_FILE"
+  if command -v cygpath >/dev/null 2>&1; then
+    plans=$(cygpath -w "$work/case$((n + 1))/repo/plans")
+    run "Windows from with its file" 0 MODE=report FROM="$plans"
+    check "Windows from: file flag" logged "$report" "$TOOL_FROM_FILE_FLAG" "$plans/$TOOL_FROM_FILE"
+  fi
   with_file=
 fi
 
