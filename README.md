@@ -5,8 +5,7 @@ release on Linux, macOS and Windows runners. In report mode it runs `tfcensus dr
 drifted units to code scanning. In comment mode it also keeps one comment with the drift report on
 the pull request.
 
-There is no release yet. v1.0.0 follows once report and comment mode are proven on a test
-repository (tfcensus milestone M14).
+v1.0.0 is on the [GitHub Marketplace](https://github.com/marketplace/actions/tfcensus).
 
 The action never takes AWS credentials. Run `aws-actions/configure-aws-credentials` and set up
 terragrunt and terraform before it.
@@ -20,8 +19,8 @@ newest 1.x release and has no release of its own.
 
 ```yaml
 steps:
-  - uses: actions/checkout@<commit SHA> # v7.0.1
-  - uses: sassdavid/tfcensus-action@<commit SHA> # v1.0.0
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  - uses: sassdavid/tfcensus-action@feb168b70125ff0c4c73954bd068aceb18e62109 # v1.0.0
   - run: tfcensus drift
 ```
 
@@ -51,11 +50,11 @@ jobs:
       id-token: write # OIDC token for the AWS role
       security-events: write # the SARIF upload
     steps:
-      - uses: actions/checkout@<commit SHA> # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: jdx/mise-action@<commit SHA> # v5.2.7, installs terragrunt and terraform
-      - uses: aws-actions/configure-aws-credentials@<commit SHA> # v6.3.0
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7, installs terragrunt and terraform
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           role-to-assume: ${{ vars.DRIFT_ROLE_ARN }}
           aws-region: eu-west-1
@@ -64,7 +63,7 @@ jobs:
           terragrunt run --all --json-out-dir "$RUNNER_TEMP/plans" \
             --report-file "$RUNNER_TEMP/plans/report.json" --report-format json \
             -- plan -refresh-only -lock=false -detailed-exitcode || true
-      - uses: sassdavid/tfcensus-action@<commit SHA> # v1.0.0
+      - uses: sassdavid/tfcensus-action@feb168b70125ff0c4c73954bd068aceb18e62109 # v1.0.0
         with:
           mode: report
           from: ${{ runner.temp }}/plans
@@ -103,7 +102,7 @@ jobs:
       pull-requests: write # the comment
     steps:
       # checkout, mise, AWS credentials and terragrunt as in the report example
-      - uses: sassdavid/tfcensus-action@<commit SHA> # v1.0.0
+      - uses: sassdavid/tfcensus-action@feb168b70125ff0c4c73954bd068aceb18e62109 # v1.0.0
         with:
           mode: comment
           from: ${{ runner.temp }}/plans
