@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/sassdavid/tfcensus-action/compare/v1.0.1...v1.1.0) (2026-11-17)
+
+
+### Features
+
+* install tfcensus 0.6.0 ([#20](https://github.com/sassdavid/tfcensus-action/issues/20)) ([04038df](https://github.com/sassdavid/tfcensus-action/commit/04038dfa9f6e30a8efa46d70e3f8116ecbc007d0))
+
 ## [1.0.1](https://github.com/sassdavid/tfcensus-action/compare/v1.0.0...v1.0.1) (2026-11-15)
 
 
