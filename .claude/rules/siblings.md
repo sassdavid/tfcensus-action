@@ -29,6 +29,7 @@ Keep the same in both siblings:
 - Tool versions in mise.toml, action SHAs, and the mise version passed to `jdx/mise-action`.
 - The golden golangci-lint config tag and the local overrides (ADR-0008).
 - Comment and writing rules: `.claude/rules/go.md` and `.claude/rules/writing.md`.
+- AWS SDK rules: `.claude/rules/aws-sdk.md`.
 
 ## Release process and accounts
 
@@ -59,5 +60,8 @@ Keep the same in both siblings:
   `explain_unmanaged`, and `docs/ci/ai-summary.md` shows an opt-in CI step (tfcensus plan ADR-0013).
 - Each repo has its own Config struct, commands, specs and `docs/plan/`, and registers its own
   MCP tools and prompts on the shared `internal/mcpkit`.
+- Each docs site has its own identity: `theme/tokens.css`, `theme/site.css`, `theme/components/`,
+  `docs/index.md`, the images in `docs/public/` and the site data generators in `scripts/gensite/`
+  (engineering ADR-0016). The build, workflows and checks are shared.
 - Each action repo has its own `scripts/tool.env` (tool name, repository, pinned version) and
   README. The milestones for both actions are in the tool repos' `docs/plan/milestones.md` (M14).
