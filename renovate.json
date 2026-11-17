@@ -25,7 +25,7 @@
       "groupName": "mise tools"
     },
     {
-      "description": "install.sh runs the cosign version that CI tests from mise.toml",
+      "description": "install.sh runs the cosign version that CI tests from mise.ci.toml",
       "groupName": "cosign",
       "matchDepNames": ["cosign", "sigstore/cosign"]
     },

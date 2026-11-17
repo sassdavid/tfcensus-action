@@ -29,7 +29,7 @@ jobs:
       - run: mise run lint
 
   # scripts/test-install.sh: every verify mode installs the pinned release, and a tampered archive
-  # fails, with and without a rewritten checksums.txt. cosign comes from mise.lock.
+  # fails, with and without a rewritten checksums.txt. cosign comes from mise.ci.lock.
   # scripts/test-run.sh: report and comment mode with a stub binary, fork pull requests included.
   test:
     name: test (${{ matrix.os }})
@@ -41,6 +41,8 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+    env:
+      MISE_ENV: ci # mise.ci.toml: the cosign that verify: cosign runs
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

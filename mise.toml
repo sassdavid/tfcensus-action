@@ -3,7 +3,6 @@
 [tools]
 go = "1.27.4"
 "go:github.com/sassdavid/tfcensus/scripts/proselint" = "0.2.0"
-cosign = "3.1.4"
 jactionlint = "v2.6.0"
 
 [tasks.check]
