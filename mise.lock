@@ -36,9 +36,9 @@ checksum = "sha256:178ab98950ac69ab25069307dc6ade79f3816e414cce95b4da166a115cde1
 url = "https://dl.google.com/go/go1.27.4.windows-amd64.zip"
 
 [[tools."go:github.com/sassdavid/tfcensus/scripts/proselint"]]
-version = "0.2.0"
+version = "0.9.0"
 backend = "go:github.com/sassdavid/tfcensus/scripts/proselint"
-specifiers = ["0.2.0"]
+specifiers = ["0.9.0"]
 
 [[tools.jactionlint]]
 version = "2.6.0"
