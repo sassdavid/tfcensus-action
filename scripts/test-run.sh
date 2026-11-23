@@ -180,14 +180,23 @@ else
   with_file=
 fi
 
-# Comment mode.
+# Comment mode: each command gets its own TOOL_COMMENT_FLAGS_<command> first, and only those.
+comment_flags() {
+  local cmd=$1 flags_var=TOOL_COMMENT_FLAGS_$1 flags=()
+  if [[ -n "${!flags_var:-}" ]]; then read -r -a flags <<<"${!flags_var}"; fi
+  check "comment: $cmd starts with its flags" \
+    test "$(head -n $((${#flags[@]} + 1)) "$case/log.$cmd" | tr '\n' ' ')" = "$cmd ${flags[*]+${flags[*]} }"
+}
+for cmd in $TOOL_COMMENT_COMMANDS; do
+  [[ "$cmd" == "$comment" ]] && continue
+  run "comment with $cmd" 0 MODE=comment COMMAND="$cmd" "${pr[@]}"
+  comment_flags "$cmd"
+  check "comment: notify after $cmd" logged notify notify --from
+done
+
 run "comment" 0 MODE=comment "${pr[@]}"
 check "comment: default command $comment" test -f "$case/log.$comment"
-if [[ -n "$TOOL_COMMENT_FLAGS" ]]; then
-  read -r -a flags <<<"$TOOL_COMMENT_FLAGS"
-  check "comment: $TOOL_COMMENT_FLAGS first" \
-    test "$(head -n $((${#flags[@]} + 1)) "$case/log.$comment" | tr '\n' ' ')" = "$comment ${flags[*]} "
-fi
+comment_flags "$comment"
 check "comment: notify" logged notify notify --from
 check "comment: github-pr-comment" logged notify --notify github-pr-comment
 check "comment: summary too" grep -q "stub md for $comment" "$case/summary"

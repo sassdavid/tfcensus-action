@@ -130,8 +130,10 @@ dir=$(mktemp -d "${temp%/}/$TOOL_NAME-$command.XXXXXX")
 json=$dir/$command.json md=$dir/$command.md sarif_file=
 
 args=()
-if [[ "$mode" == comment && -n "$TOOL_COMMENT_FLAGS" ]]; then
-  read -r -a args <<<"$TOOL_COMMENT_FLAGS"
+# The comment flags of each command are in TOOL_COMMENT_FLAGS_<command>.
+flags_var=TOOL_COMMENT_FLAGS_$command
+if [[ "$mode" == comment && -n "${!flags_var:-}" ]]; then
+  read -r -a args <<<"${!flags_var}"
 fi
 if has "$command" "$TOOL_SARIF_COMMANDS"; then
   sarif_file=$dir/$command.sarif
