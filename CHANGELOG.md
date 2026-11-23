@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sassdavid/tfcensus-action/compare/v1.2.0...v1.2.1) (2026-11-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sassdavid/tfcensus to v0.9.1 ([#27](https://github.com/sassdavid/tfcensus-action/issues/27)) ([130e19a](https://github.com/sassdavid/tfcensus-action/commit/130e19a515f344cd8fdf7bed484c777f22ead251))
+
 ## [1.2.0](https://github.com/sassdavid/tfcensus-action/compare/v1.1.0...v1.2.0) (2026-11-18)
 
 
