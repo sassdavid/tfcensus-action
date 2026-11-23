@@ -20,7 +20,7 @@ newest 1.x release and has no release of its own.
 ```yaml
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  - uses: sassdavid/tfcensus-action@f2cc1dccce5a5de868ff2f3f50dbec2603d197c7 # v1.0.1
+  - uses: sassdavid/tfcensus-action@f2e424405b36d9a380bf64f3ae4920652decff15 # v1.2.0
   - run: tfcensus drift
 ```
 
@@ -63,7 +63,7 @@ jobs:
           terragrunt run --all --json-out-dir "$RUNNER_TEMP/plans" \
             --report-file "$RUNNER_TEMP/plans/report.json" --report-format json \
             -- plan -refresh-only -lock=false -detailed-exitcode || true
-      - uses: sassdavid/tfcensus-action@f2cc1dccce5a5de868ff2f3f50dbec2603d197c7 # v1.0.1
+      - uses: sassdavid/tfcensus-action@f2e424405b36d9a380bf64f3ae4920652decff15 # v1.2.0
         with:
           mode: report
           from: ${{ runner.temp }}/plans
@@ -102,7 +102,7 @@ jobs:
       pull-requests: write # the comment
     steps:
       # checkout, mise, AWS credentials and terragrunt as in the report example
-      - uses: sassdavid/tfcensus-action@f2cc1dccce5a5de868ff2f3f50dbec2603d197c7 # v1.0.1
+      - uses: sassdavid/tfcensus-action@f2e424405b36d9a380bf64f3ae4920652decff15 # v1.2.0
         with:
           mode: comment
           from: ${{ runner.temp }}/plans
