@@ -114,6 +114,24 @@ run "bad step-summary" 2 MODE=report STEP_SUMMARY=1
 run "missing working-directory" 2 MODE=report WORKING_DIRECTORY=nope && stderr_has "not a directory"
 run "comment on push" 2 MODE=comment GITHUB_EVENT_NAME=push && stderr_has "needs a pull_request event"
 check "nothing ran on a bad input" test ! -e "$case/log.$comment"
+if [[ -n "$TOOL_COMMENT_MIN_VERSION" ]]; then
+  # The highest version below the minimum, with 99 for a part that counts down.
+  IFS=. read -r major minor patch <<<"$TOOL_COMMENT_MIN_VERSION"
+  if ((patch > 0)); then
+    below=$major.$minor.$((patch - 1))
+  elif ((minor > 0)); then
+    below=$major.$((minor - 1)).99
+  else
+    below=$((major - 1)).99.99
+  fi
+  run "comment below the minimum version" 2 MODE=comment VERSION="v$below" "${pr[@]}" &&
+    stderr_has "needs $TOOL_NAME $TOOL_COMMENT_MIN_VERSION or later, not $below"
+  check "nothing ran below the minimum version" test ! -e "$case/log.$comment"
+  run "comment at the minimum version" 0 MODE=comment VERSION="$TOOL_COMMENT_MIN_VERSION" "${pr[@]}"
+  run "comment at a later major version" 0 MODE=comment VERSION="$((major + 1)).0.0" "${pr[@]}"
+  run "report below the minimum version" 0 MODE=report VERSION="$below"
+fi
+run "comment with version latest" 0 MODE=comment VERSION=latest "${pr[@]}"
 
 run "install" 0 &&
   check "install: version and path outputs" test "$(out version)" = "$TOOL_VERSION" -a -n "$(out path)"
